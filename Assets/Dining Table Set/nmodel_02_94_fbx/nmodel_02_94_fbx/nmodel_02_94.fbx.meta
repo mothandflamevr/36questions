@@ -1,0 +1,191 @@
+fileFormatVersion: 2
+guid: 2c3a7c12fdcb08f49a34a00fc75c2ed4
+timeCreated: 1485323628
+licenseType: Pro
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: nmodel_02_94_chair1
+    100004: nmodel_02_94_chair2
+    100006: nmodel_02_94_chair3
+    100008: nmodel_02_94_chair4
+    100010: nmodel_02_94_chairs
+    100012: nmodel_02_94_legs
+    100014: nmodel_02_94_legs 1
+    100016: nmodel_02_94_legs 2
+    100018: nmodel_02_94_legs 3
+    100020: nmodel_02_94_legs 4
+    100022: nmodel_02_94_pillow
+    100024: nmodel_02_94_pillow 1
+    100026: nmodel_02_94_pillow 2
+    100028: nmodel_02_94_pillow 3
+    100030: nmodel_02_94_pins
+    100032: nmodel_02_94_pins 1
+    100034: nmodel_02_94_pins 2
+    100036: nmodel_02_94_pins 3
+    100038: nmodel_02_94_pins 4
+    100040: nmodel_02_94_plates
+    100042: nmodel_02_94_table
+    100044: nmodel_02_94_table_mount
+    100046: nmodel_02_94_tabletop
+    100048: nmodel_02_94_wate_jug1
+    100050: nmodel_02_94_wate_jug_cap
+    100052: nmodel_02_94_water_jug
+    100054: polySurface9
+    400000: //RootNode
+    400002: nmodel_02_94_chair1
+    400004: nmodel_02_94_chair2
+    400006: nmodel_02_94_chair3
+    400008: nmodel_02_94_chair4
+    400010: nmodel_02_94_chairs
+    400012: nmodel_02_94_legs
+    400014: nmodel_02_94_legs 1
+    400016: nmodel_02_94_legs 2
+    400018: nmodel_02_94_legs 3
+    400020: nmodel_02_94_legs 4
+    400022: nmodel_02_94_pillow
+    400024: nmodel_02_94_pillow 1
+    400026: nmodel_02_94_pillow 2
+    400028: nmodel_02_94_pillow 3
+    400030: nmodel_02_94_pins
+    400032: nmodel_02_94_pins 1
+    400034: nmodel_02_94_pins 2
+    400036: nmodel_02_94_pins 3
+    400038: nmodel_02_94_pins 4
+    400040: nmodel_02_94_plates
+    400042: nmodel_02_94_table
+    400044: nmodel_02_94_table_mount
+    400046: nmodel_02_94_tabletop
+    400048: nmodel_02_94_wate_jug1
+    400050: nmodel_02_94_wate_jug_cap
+    400052: nmodel_02_94_water_jug
+    400054: polySurface9
+    2300000: nmodel_02_94_legs
+    2300002: nmodel_02_94_legs 1
+    2300004: nmodel_02_94_legs 2
+    2300006: nmodel_02_94_legs 3
+    2300008: nmodel_02_94_legs 4
+    2300010: nmodel_02_94_pillow
+    2300012: nmodel_02_94_pillow 1
+    2300014: nmodel_02_94_pillow 2
+    2300016: nmodel_02_94_pillow 3
+    2300018: nmodel_02_94_pins
+    2300020: nmodel_02_94_pins 1
+    2300022: nmodel_02_94_pins 2
+    2300024: nmodel_02_94_pins 3
+    2300026: nmodel_02_94_pins 4
+    2300028: nmodel_02_94_plates
+    2300030: nmodel_02_94_table_mount
+    2300032: nmodel_02_94_tabletop
+    2300034: nmodel_02_94_wate_jug1
+    2300036: nmodel_02_94_wate_jug_cap
+    2300038: polySurface9
+    3300000: nmodel_02_94_legs
+    3300002: nmodel_02_94_legs 1
+    3300004: nmodel_02_94_legs 2
+    3300006: nmodel_02_94_legs 3
+    3300008: nmodel_02_94_legs 4
+    3300010: nmodel_02_94_pillow
+    3300012: nmodel_02_94_pillow 1
+    3300014: nmodel_02_94_pillow 2
+    3300016: nmodel_02_94_pillow 3
+    3300018: nmodel_02_94_pins
+    3300020: nmodel_02_94_pins 1
+    3300022: nmodel_02_94_pins 2
+    3300024: nmodel_02_94_pins 3
+    3300026: nmodel_02_94_pins 4
+    3300028: nmodel_02_94_plates
+    3300030: nmodel_02_94_table_mount
+    3300032: nmodel_02_94_tabletop
+    3300034: nmodel_02_94_wate_jug1
+    3300036: nmodel_02_94_wate_jug_cap
+    3300038: polySurface9
+    4300000: nmodel_02_94_plates
+    4300002: nmodel_02_94_tabletop
+    4300004: polySurface9
+    4300006: nmodel_02_94_legs
+    4300008: nmodel_02_94_pins
+    4300010: nmodel_02_94_table_mount
+    4300012: nmodel_02_94_wate_jug1
+    4300014: nmodel_02_94_wate_jug_cap
+    4300016: nmodel_02_94_pins
+    4300018: nmodel_02_94_legs
+    4300020: nmodel_02_94_pillow
+    4300022: nmodel_02_94_pins
+    4300024: nmodel_02_94_legs
+    4300026: nmodel_02_94_pillow
+    4300028: nmodel_02_94_pins
+    4300030: nmodel_02_94_legs
+    4300032: nmodel_02_94_pillow
+    4300034: nmodel_02_94_pins
+    4300036: nmodel_02_94_legs
+    4300038: nmodel_02_94_pillow
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -32,7 +32,7 @@ namespace RenderHeads.Media.AVProVideo.Demos
 			// Create a texture to draw the thumbnails on
 			_displaySheet = RenderTexture.GetTemporary(Screen.width, Screen.height, 0);
 			_displaySheet.useMipMap = false;
-			_displaySheet.generateMips = false;
+			_displaySheet.autoGenerateMips = false;
 			_displaySheet.antiAliasing = 1;
 			_displaySheet.Create();
 
