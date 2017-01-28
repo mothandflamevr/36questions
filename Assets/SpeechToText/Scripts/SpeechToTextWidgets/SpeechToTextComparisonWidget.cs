@@ -245,7 +245,6 @@ namespace UnitySpeechToText.Widgets
                 m_RecordButtonTextUI.text = m_RecordingText;
                 m_RecordButtonImage.color = m_RecordingButtonColor;
                 m_WaitingSpeechToTextServiceWidgets.Clear();
-                Debug.Log(m_SpeechToTextServiceWidgets.Length);
                 foreach (var serviceWidget in m_SpeechToTextServiceWidgets)
                 {
                     SmartLogger.Log(DebugFlags.SpeechToTextWidgets, "tell service widget to start recording");

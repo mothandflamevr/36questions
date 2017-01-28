@@ -6,6 +6,7 @@ public class Controller : MonoBehaviour {
 
     public static int leftQAIndex = 0;
     public static int rightQAIndex = 1;
+    public static int questionsAsked = 0;
     public static List<QAPair> interactions;
     public static bool listeningMode = true;
 
@@ -21,9 +22,9 @@ public class Controller : MonoBehaviour {
     // Use this for initialization
     void Start () {
 
-        videoHandler = GameObject.Find("MediaPlayer").GetComponent<VideoHandler>();
+        videoHandler = GameObject.Find("MediaPlayers").GetComponent<VideoHandler>();
         cardHandler = GameObject.Find("Cards").GetComponent<CardHandler>();
-        playVideo = GameObject.Find("VideoPlane").GetComponent<PlayVideo>();
+        //playVideo = GameObject.Find("VideoPlane").GetComponent<PlayVideo>();
         speechRecognition = GetComponent<SpeechRecognition>();
         interactions = new List<QAPair>();
 
@@ -69,40 +70,28 @@ public class Controller : MonoBehaviour {
         // Stop listening to further speech
         listeningMode = false;
         speechRecognition.dictationRecognizer.Stop();
+        questionsAsked += 1;
 
         // Trigger next video
-        //videoHandler.nextCut(QAPair.videofilePrefix + questionIndex);
+        videoHandler.nextCut(QAPair.videofilePrefix + questionIndex + ".mp4");
 
         // Update index variables and card images
         int newIndex = Mathf.Max(leftQAIndex, rightQAIndex) + 1;
         if (questionIndex == leftQAIndex)
         {
-            playVideo.nextCut(0); // TODO: Enumeration
-            if (newIndex == interactions.Count)
-            {
-                leftQAIndex = -1;
-            }
-            else
-            {
-                leftQAIndex = newIndex;
-                //cardHandler.SetLeftCardImage(QAPair.cardImagePrefix + leftQAIndex + QAPair.cardImageSuffix);
-                playVideo.loadLeftMovie(QAPair.videofilePrefix + leftQAIndex);
-            }
+            if (newIndex < interactions.Count)
+            leftQAIndex = newIndex;
+            //cardHandler.SetLeftCardImage(QAPair.cardImagePrefix + leftQAIndex + QAPair.cardImageSuffix);
+            //playVideo.loadLeftMovie(QAPair.videofilePrefix + leftQAIndex);
 
         }
         else if (questionIndex == rightQAIndex)
         {
-            playVideo.nextCut(1);
-            if (newIndex == interactions.Count)
-            {
-                rightQAIndex = -1;
-            }
-            else
-            {
-                rightQAIndex = newIndex;
-                //cardHandler.SetRightCardImage(QAPair.cardImagePrefix + rightQAIndex + QAPair.cardImageSuffix);
-                playVideo.loadRightMovie(QAPair.videofilePrefix + rightQAIndex);
-            }
+            //playVideo.nextCut(1);
+            if (newIndex < interactions.Count)
+            rightQAIndex = newIndex;
+            //cardHandler.SetRightCardImage(QAPair.cardImagePrefix + rightQAIndex + QAPair.cardImageSuffix);
+            //playVideo.loadRightMovie(QAPair.videofilePrefix + rightQAIndex);
         }
 
         StartCoroutine(Wait(interactions[questionIndex].cardDisplayTime));
@@ -111,7 +100,7 @@ public class Controller : MonoBehaviour {
 
     void ListeningModeOn ()
     {
-        if (leftQAIndex == -1)
+        if (leftQAIndex >= interactions.Count)
         {
             cardHandler.SetLeftCardImage("CardImages/IntroQuestion_orange");  
         }
@@ -120,18 +109,13 @@ public class Controller : MonoBehaviour {
             cardHandler.SetLeftCardImage(QAPair.cardImagePrefix + leftQAIndex + QAPair.cardImageSuffix);
         }
 
-        if (rightQAIndex == -1)
+        if (rightQAIndex >= interactions.Count)
         {
             cardHandler.SetRightCardImage("CardImages/IntroQuestion_orange");
         }
         else
         {
             cardHandler.SetRightCardImage(QAPair.cardImagePrefix + rightQAIndex + QAPair.cardImageSuffix);
-        }
-
-        if (leftQAIndex == -1 && rightQAIndex == -1)
-        {
-            // Fade out scene
         }
 
         // Called when girl stops talking in video. Cards are displayed. Dictation recognizer enabled. 

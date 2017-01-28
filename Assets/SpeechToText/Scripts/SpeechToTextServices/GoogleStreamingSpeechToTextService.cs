@@ -87,7 +87,6 @@ namespace UnitySpeechToText.Services
         /// </summary>
         protected override IEnumerator StreamAudioAndListenForResponses()
         {
-            UnityEngine.Debug.Log("Stream audio called");
             m_TempAudioComponent.ClearTempAudioFiles();
             m_ResponseJSONsQueue.Clear();
             m_StreamingSpeechToTextProcessHasStarted = false;
@@ -118,7 +117,6 @@ namespace UnitySpeechToText.Services
             m_StreamingSpeechToTextProcess.OutputDataReceived += OnStreamingSpeechToTextProcessOutputDataReceived;
             
             SmartLogger.Log(DebugFlags.GoogleStreamingSpeechToText, "start streaming speech-to-text process");
-            UnityEngine.Debug.Log("start streaming speech-to-text process");
             m_StreamingSpeechToTextProcess.Start();
             m_StreamingSpeechToTextProcess.BeginOutputReadLine();
             m_StreamingSpeechToTextProcessHasStarted = true;
@@ -131,7 +129,6 @@ namespace UnitySpeechToText.Services
             // TODO: I don't know why, but I need to write garbage text first.
             // For some reason the first standard input begins with "0x3F3F3F".
             SmartLogger.Log(DebugFlags.GoogleStreamingSpeechToText, "ready to stream data");
-            UnityEngine.Debug.Log("ready to stream data");
             m_StreamingSpeechToTextProcess.StandardInput.WriteLine("clear input stream");
 
             // Tell the process to start streaming.
@@ -149,7 +146,6 @@ namespace UnitySpeechToText.Services
                 yield return SaveAndSendNextChunk();
             }
             SmartLogger.Log(DebugFlags.GoogleStreamingSpeechToText, "stopped recording");
-            UnityEngine.Debug.Log("stopped recording");
 
             // Send any remaining chunks.
             while (m_AudioChunksQueue.Count > 0)
@@ -201,7 +197,6 @@ namespace UnitySpeechToText.Services
             {
                 string trimmedData = e.Data.Trim();
                 SmartLogger.Log(DebugFlags.GoogleStreamingSpeechToText, "process output: " + trimmedData);
-                UnityEngine.Debug.Log("process output: " + trimmedData);
                 if (trimmedData == k_ReadyToStreamDataOutputPrompt)
                 {
                     SmartLogger.Log(DebugFlags.GoogleStreamingSpeechToText, "set ready to stream data");

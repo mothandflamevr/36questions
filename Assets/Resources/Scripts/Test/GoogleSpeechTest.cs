@@ -12,6 +12,7 @@ public class GoogleSpeechTest : MonoBehaviour {
         m_SpeechToTextService.RegisterOnError(OnError);
         m_SpeechToTextService.RegisterOnTextResult(OnTextResult);
         m_SpeechToTextService.RegisterOnRecordingTimeout(OnRecordingTimeout);
+
         m_SpeechToTextService.StartRecording();
     }
 	
