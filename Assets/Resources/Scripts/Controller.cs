@@ -18,6 +18,7 @@ public class Controller : MonoBehaviour {
     PlayVideo playVideo;
     CardHandler cardHandler;
     SpeechRecognition speechRecognition;
+    bool flagLeft, flagRight = false;
 
     // Use this for initialization
     void Start () {
@@ -30,6 +31,7 @@ public class Controller : MonoBehaviour {
 
         // Create QAPair list
         CreatePairList();
+        speechRecognition.initializeSpeechRecognitionSystem();
 
         // Initialize experience: Set correct images to cards
         cardHandler.SetCardImages(QAPair.cardImagePrefix + leftQAIndex + QAPair.cardImageSuffix, QAPair.cardImagePrefix + rightQAIndex + QAPair.cardImageSuffix);
@@ -67,20 +69,29 @@ public class Controller : MonoBehaviour {
 
     public void TriggerNextVideo (int questionIndex)
     {
-        // Stop listening to further speech
         listeningMode = false;
-        speechRecognition.dictationRecognizer.Stop();
         questionsAsked += 1;
 
-        // Trigger next video
-        videoHandler.nextCut(QAPair.videofilePrefix + questionIndex + ".mp4");
+        // Stop listening to further speech
+        if (speechRecognition.shouldUseDictation)
+            speechRecognition.dictationRecognizer.Stop();
+        else speechRecognition.keywordRecognizer.Stop();
+
+
+        // Trigger next video. Trigger after 2 seconds if there is currently a transiton in effect
+        if (videoHandler.isTransitioning)
+        {
+            StartCoroutine(PlayVideoAfter(2f, QAPair.videofilePrefix + questionIndex + ".mp4", questionIndex));
+        }
+        else StartCoroutine(PlayVideoAfter(0f, QAPair.videofilePrefix + questionIndex + ".mp4", questionIndex));
 
         // Update index variables and card images
         int newIndex = Mathf.Max(leftQAIndex, rightQAIndex) + 1;
         if (questionIndex == leftQAIndex)
         {
             if (newIndex < interactions.Count)
-            leftQAIndex = newIndex;
+                leftQAIndex = newIndex;
+            else flagLeft = true;
             //cardHandler.SetLeftCardImage(QAPair.cardImagePrefix + leftQAIndex + QAPair.cardImageSuffix);
             //playVideo.loadLeftMovie(QAPair.videofilePrefix + leftQAIndex);
 
@@ -89,42 +100,46 @@ public class Controller : MonoBehaviour {
         {
             //playVideo.nextCut(1);
             if (newIndex < interactions.Count)
-            rightQAIndex = newIndex;
+                rightQAIndex = newIndex;
+            else flagRight = true;
             //cardHandler.SetRightCardImage(QAPair.cardImagePrefix + rightQAIndex + QAPair.cardImageSuffix);
             //playVideo.loadRightMovie(QAPair.videofilePrefix + rightQAIndex);
         }
-
-        StartCoroutine(Wait(interactions[questionIndex].cardDisplayTime));
-        StartCoroutine(HideCardsIn(3f));
     }
 
     void ListeningModeOn ()
     {
-        if (leftQAIndex >= interactions.Count)
+        if (flagLeft)
         {
-            cardHandler.SetLeftCardImage("CardImages/IntroQuestion_orange");  
+            cardHandler.SetLeftCardImage("CardImages/IntroQuestion_grey");  
         }
         else
         {
             cardHandler.SetLeftCardImage(QAPair.cardImagePrefix + leftQAIndex + QAPair.cardImageSuffix);
         }
 
-        if (rightQAIndex >= interactions.Count)
+        if (flagRight)
         {
-            cardHandler.SetRightCardImage("CardImages/IntroQuestion_orange");
+            cardHandler.SetRightCardImage("CardImages/IntroQuestion_grey");
         }
         else
         {
             cardHandler.SetRightCardImage(QAPair.cardImagePrefix + rightQAIndex + QAPair.cardImageSuffix);
         }
 
+        if (questionsAsked == interactions.Count) return;
+
         // Called when girl stops talking in video. Cards are displayed. Dictation recognizer enabled. 
         listeningMode = true;
         cardHandler.DisplayCards();
-        speechRecognition.dictationRecognizer.Start();
+
+        // Activate speech recognition
+        if (speechRecognition.shouldUseDictation)
+            speechRecognition.dictationRecognizer.Start();
+        else speechRecognition.keywordRecognizer.Start();
     }
 
-    IEnumerator Wait (float seconds)
+    IEnumerator WaitForListeningMode (float seconds)
     {
         yield return new WaitForSeconds(seconds);
         ListeningModeOn();
@@ -134,5 +149,13 @@ public class Controller : MonoBehaviour {
     {
         yield return new WaitForSeconds(seconds);
         cardHandler.HideCards();
+    }
+
+    IEnumerator PlayVideoAfter(float seconds, string videoFile, int index)
+    {
+        yield return new WaitForSeconds(seconds);
+        videoHandler.nextCut(videoFile);
+        StartCoroutine(WaitForListeningMode(interactions[index].cardDisplayTime));
+        StartCoroutine(HideCardsIn(2f));
     }
 }

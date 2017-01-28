@@ -363,7 +363,7 @@ namespace RenderHeads.Media.AVProVideo
 					{
 						checkForFileExist = false;
 					}
-#if (UNITY_ANDROID)
+#if (UNITY_ANDROID || (UNITY_5_2 && UNITY_WSA))
 					checkForFileExist = false;
 #endif
 

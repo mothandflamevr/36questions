@@ -6,37 +6,20 @@ using System.Linq;
 
 public class SpeechRecognition : MonoBehaviour {
 
-    private KeywordRecognizer keywordRecognizer;
+    public KeywordRecognizer keywordRecognizer;
     public DictationRecognizer dictationRecognizer;
+    public bool shouldUseDictation;
+
     public delegate void QuestionRecognition(int index);
     public static event QuestionRecognition OnRecognized;
 
     public static int minWordCount = 4;
     public static float minAcceptableWordComparisonSuccessRatio = 0.75f;
-
-    public static Dictionary<string, string> keywords = new Dictionary<string, string>();
-    int numberOfChoices;
+    string[] keywords;
 
     // Use this for initialization
     void Start () {
 
-        // Set up initial keywords 
-        //initializeDictionary();
-
-        //keywordRecognizer = new KeywordRecognizer(keywords.Keys.ToArray());
-        //keywordRecognizer.OnPhraseRecognized += KeywordRecognizer_OnPhraseRecognized;
-        //keywordRecognizer.Start();
-
-        dictationRecognizer = new DictationRecognizer();
-        dictationRecognizer.AutoSilenceTimeoutSeconds = 100f;
-        dictationRecognizer.InitialSilenceTimeoutSeconds = 100f;
-
-        dictationRecognizer.DictationHypothesis += DictationRecognizer_DictationHypothesis;
-        dictationRecognizer.DictationResult += DictationRecognizer_DictationResult;
-        dictationRecognizer.DictationError += DictationRecognizer_DictationError;
-        dictationRecognizer.DictationComplete += DictationRecognizer_DictationComplete;
-
-        dictationRecognizer.Start();
     }
 	
 	// Update is called once per frame
@@ -44,13 +27,23 @@ public class SpeechRecognition : MonoBehaviour {
 		
 	}
 
+    // Dispose
     void Stop()
     {
-        dictationRecognizer.DictationResult -= DictationRecognizer_DictationResult;
-        dictationRecognizer.DictationComplete -= DictationRecognizer_DictationComplete;
-        dictationRecognizer.DictationHypothesis -= DictationRecognizer_DictationHypothesis;
-        dictationRecognizer.DictationError -= DictationRecognizer_DictationError;
-        dictationRecognizer.Dispose();
+        if (shouldUseDictation)
+        {
+            dictationRecognizer.DictationResult -= DictationRecognizer_DictationResult;
+            dictationRecognizer.DictationComplete -= DictationRecognizer_DictationComplete;
+            dictationRecognizer.DictationHypothesis -= DictationRecognizer_DictationHypothesis;
+            dictationRecognizer.DictationError -= DictationRecognizer_DictationError;
+            dictationRecognizer.Dispose();
+        }
+
+        else
+        {
+            keywordRecognizer.OnPhraseRecognized -= KeywordRecognizer_OnPhraseRecognized;
+            keywordRecognizer.Dispose();
+        }
     }
 
     private void DictationRecognizer_DictationResult(string text, ConfidenceLevel confidence)
@@ -90,6 +83,49 @@ public class SpeechRecognition : MonoBehaviour {
     private void DictationRecognizer_DictationError(string error, int hresult)
     {
         Debug.LogError("Dictation error: " + error);
+    }
+
+    //Keyword recognizer handler
+    private void KeywordRecognizer_OnPhraseRecognized(PhraseRecognizedEventArgs args)
+    {
+        if (string.Equals(args.text, Controller.interactions[Controller.leftQAIndex].question) && args.confidence < ConfidenceLevel.Rejected)
+        {
+            OnRecognized(Controller.leftQAIndex);
+        }
+        else if (string.Equals(args.text, Controller.interactions[Controller.rightQAIndex].question) && args.confidence < ConfidenceLevel.Rejected)
+        {
+            OnRecognized(Controller.rightQAIndex);
+        }
+    }
+
+    public void initializeSpeechRecognitionSystem ()
+    {
+        if (!shouldUseDictation)
+        {
+            keywords = new string[Controller.interactions.Count];
+            for (int i = 0; i < Controller.interactions.Count; i++)
+            {
+                keywords[i] = Controller.interactions[i].question;
+                Debug.Log(keywords[i]);
+            }
+            keywordRecognizer = new KeywordRecognizer(keywords);
+            keywordRecognizer.OnPhraseRecognized += KeywordRecognizer_OnPhraseRecognized;
+            keywordRecognizer.Start();
+        }
+
+        else
+        {
+            dictationRecognizer = new DictationRecognizer();
+            dictationRecognizer.AutoSilenceTimeoutSeconds = 100f;
+            dictationRecognizer.InitialSilenceTimeoutSeconds = 100f;
+
+            dictationRecognizer.DictationHypothesis += DictationRecognizer_DictationHypothesis;
+            dictationRecognizer.DictationResult += DictationRecognizer_DictationResult;
+            dictationRecognizer.DictationError += DictationRecognizer_DictationError;
+            dictationRecognizer.DictationComplete += DictationRecognizer_DictationComplete;
+
+            dictationRecognizer.Start();
+        }
     }
 
     /// <summary>
@@ -133,38 +169,5 @@ public class SpeechRecognition : MonoBehaviour {
             Debug.Log("matches right question");
         }
     }
-
-    // Keyword recognizer handler
-    //private void KeywordRecognizer_OnPhraseRecognized(PhraseRecognizedEventArgs args)
-    //{
-    //    string videoFile;
-    //    // if the keyword recognized is in our dictionary, call handler in videoHandler
-    //    if (keywords.TryGetValue(args.text, out videoFile) && args.confidence <= ConfidenceLevel.Low)
-    //    {
-    //        Debug.Log("You said " + args.text + " (acceptable confidence)");
-
-    //        // Trigger cut
-    //        videoHandler.nextCut(args.text, videoFile);
-
-    //        // Change card text for next time
-    //        if (args.text == questionBank[0])
-    //        {
-    //            videoHandler.setOrReplaceCardText(0, questionBank[2]);
-    //        }
-    //        else if (args.text == questionBank[1]) {
-    //            videoHandler.setOrReplaceCardText(1, questionBank[2]);
-    //        }
-    //    }
-    //    else if (keywords.TryGetValue(args.text, out videoFile) && args.confidence == ConfidenceLevel.Rejected) {
-    //        Debug.Log("You said " + args.text + " but it was rejected");
-    //    }
-    //}
-
-    //void initializeDictionary() {
-    //    keywords.Clear();
-    //    for (int i = 0; i < numberOfChoices; i++) {
-    //        keywords.Add(questionBank[i], videoFilePaths[i]);
-    //    }
-    //}
 
 }

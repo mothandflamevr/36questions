@@ -3,20 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using RenderHeads.Media.AVProVideo;
 
-public class VideoHandler : MonoBehaviour {
+public class VideoHandler : MonoBehaviour
+{
 
     MediaPlayer mp1;
     MediaPlayer mp2;
     public GameObject screen1;
     public GameObject screen2;
-    bool isLoading = false;
+    public bool isTransitioning = false;
 
     int availablePlayer = 1;
     MediaPlayer[] mps;
     GameObject[] screens;
 
+    private IEnumerator LoopCoroutine;
+
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         mp1 = transform.FindChild("MediaPlayer1").GetComponent<MediaPlayer>();
         mp1.Events.AddListener(OnVideoEvent1);
 
@@ -26,31 +30,34 @@ public class VideoHandler : MonoBehaviour {
         mps = new MediaPlayer[] { mp1, mp2 };
         screens = new GameObject[] { screen1, screen2 };
     }
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
 
     /// <summary>
     /// Plays next video file based on first detected word
     /// </summary>
     /// <param name="word">Word that was spoken</param>
     /// <param name="videoFile">Video file that should be played</param>
-    public void nextCut(string videoFile) {
-        isLoading = true;
-        if (availablePlayer == 1)
+    public void nextCut(string videoFile)
+    {
+        if (!isTransitioning)
         {
-            mp1.OpenVideoFromFile(MediaPlayer.FileLocation.RelativeToStreamingAssetsFolder, videoFile, true);
-            availablePlayer = 2;
+            isTransitioning = true;
+            if (availablePlayer == 1)
+            {
+                mp1.OpenVideoFromFile(MediaPlayer.FileLocation.RelativeToStreamingAssetsFolder, videoFile, true);
+                availablePlayer = 2;
+            }
+            else if (availablePlayer == 2)
+            {
+                mp2.OpenVideoFromFile(MediaPlayer.FileLocation.RelativeToStreamingAssetsFolder, videoFile, true);
+                availablePlayer = 1;
+            }
         }
-        else if (availablePlayer == 2)
-        {
-            mp2.OpenVideoFromFile(MediaPlayer.FileLocation.RelativeToStreamingAssetsFolder, videoFile, true);
-            availablePlayer = 1;
-        }
-
-
     }
 
     // Callback function to handle events
@@ -60,13 +67,13 @@ public class VideoHandler : MonoBehaviour {
         switch (et)
         {
             case MediaPlayerEvent.EventType.ReadyToPlay:
-                isLoading = false;
-                StartCoroutine(screenDisplay(1f, 1));
-                StartCoroutine(screenTimeout(2f, 2));
+                StartCoroutine(FadeIn(2f, 1));
+                StartCoroutine(FadeOut(2f, 2));
+                StopCoroutine("LoopIntroVideo");
+                StartCoroutine("LoopIntroVideo", mp.Info.GetDurationMs() / 1000);
                 break;
             case MediaPlayerEvent.EventType.FinishedPlaying:
-                mp.Control.Stop();
-                nextCut("Intro.mp4");
+                mp.Control.Pause();
                 break;
         }
         //Debug.Log("Event: " + et.ToString());
@@ -78,31 +85,56 @@ ErrorCode errorCode)
         switch (et)
         {
             case MediaPlayerEvent.EventType.ReadyToPlay:
-                isLoading = false;
-                StartCoroutine(screenDisplay(1f, 2));
-                StartCoroutine(screenTimeout(2f, 1));
+                StartCoroutine(FadeIn(2f, 2));
+                StartCoroutine(FadeOut(2f, 1));
+                StopCoroutine("LoopIntroVideo");
+                StartCoroutine("LoopIntroVideo", mp.Info.GetDurationMs() / 1000);
                 break;
             case MediaPlayerEvent.EventType.FinishedPlaying:
                 mp.Control.Pause();
-                nextCut("Intro.mp4");
                 break;
         }
         //Debug.Log("Event: " + et.ToString());
     }
 
-    IEnumerator screenTimeout(float delayTime, int index) {
-        yield return new WaitForSeconds(delayTime);
-        //GameObject.Find("Instruction").SetActive(false);
+    public IEnumerator FadeIn(float duration, int index)
+    {
+        index -= 1;
+        Color color = screens[index].GetComponent<Renderer>().material.color;
+        screens[index].GetComponent<Renderer>().material.color = new Color(color.r, color.g, color.b, 0);
+        screens[index].SetActive(true);
 
-        screens[index - 1].SetActive(false);
-        mps[index - 1].Control.Stop();
+        float startTime = Time.time;
+        while (Time.time < startTime + duration)
+        {
+            float t = (Time.time - startTime) / duration;
+            color = screens[index].GetComponent<Renderer>().material.color;
+            screens[index].GetComponent<Renderer>().material.color = new Color(color.r, color.g, color.b, t);
+            yield return null;
+        }
+
+        isTransitioning = false;
     }
 
-    IEnumerator screenDisplay(float delayTime, int index)
+    public IEnumerator FadeOut(float duration, int index)
     {
-        yield return new WaitForSeconds(delayTime);
-        //GameObject.Find("Instruction").SetActive(false);
+        index -= 1;
+        float startTime = Time.time;
+        while (Time.time < startTime + duration)
+        {
+            float t = (Time.time - startTime) / duration;
+            Color color = screens[index].GetComponent<Renderer>().material.color;
+            screens[index].GetComponent<Renderer>().material.color = new Color(color.r, color.g, color.b, 1 - t);
+            yield return null;
+        }
+        screens[index].SetActive(false);
+        mps[index].Control.Stop();
+        isTransitioning = false;
+    }
 
-        screens[index - 1].SetActive(true);
+    public IEnumerator LoopIntroVideo (float duration)
+    {
+        yield return new WaitForSeconds(duration - 2.5f);
+        nextCut("Intro.mp4");
     }
 }
