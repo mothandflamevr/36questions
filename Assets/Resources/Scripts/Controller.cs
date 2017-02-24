@@ -45,6 +45,7 @@ public class Controller : MonoBehaviour {
         //playVideo.loadLeftMovie(QAPair.videofilePrefix + leftQAIndex);
         //playVideo.loadRightMovie(QAPair.videofilePrefix + rightQAIndex);
 
+        videoHandler.Initialize();
         videoHandler.nextCut("Intro.mp4");
     }
 	

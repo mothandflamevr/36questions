@@ -21,6 +21,17 @@ public class VideoHandler : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
+
+    public void Initialize()
+    {
         mp1 = transform.FindChild("MediaPlayer1").GetComponent<MediaPlayer>();
         mp1.Events.AddListener(OnVideoEvent1);
 
@@ -29,12 +40,6 @@ public class VideoHandler : MonoBehaviour
 
         mps = new MediaPlayer[] { mp1, mp2 };
         screens = new GameObject[] { screen1, screen2 };
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     /// <summary>
